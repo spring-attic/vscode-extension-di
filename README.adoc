@@ -1,0 +1,34 @@
+= Generic purpose library for VSCode extensions
+
+This library is meant to have a collection of extension utilities to ease development of
+a VSCode extensions building atop of a `vscode-extension-core` and
+[inversify](http://inversify.io/). Idea is not to make any sort of Spring DI clone but to
+use `inversify` to make it easier to build extensions and provide some of a same ideas
+from a Spring DI container system.
+
+[NOTE]
+====
+This project is currently in incubation.
+====
+
+Until we start to publish packages to a node repository dependency to `vscode-extension-core`
+is hardcoded. Generic build process is:
+
+[source,bash,indent=0]
+----
+$ rm -fr node_modules
+$ rm package-lock.json
+$ npm install
+$ npm pack
+----
+
+== Code of Conduct
+This project adheres to the Contributor Covenant
+link:CODE_OF_CONDUCT.adoc[code of conduct].
+By participating, you  are expected to uphold this code. Please report
+unacceptable behavior to spring-code-of-conduct@pivotal.io.
+
+== License
+Spring Dsl is Open Source software released under the
+http://www.apache.org/licenses/LICENSE-2.0.html[Apache 2.0 license].
+
