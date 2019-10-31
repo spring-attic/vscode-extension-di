@@ -1,0 +1,78 @@
+#################################################
+# Resources
+#################################################
+resources:
+
+- name: git-repo
+  type: git
+  source:
+    uri: ((github-repo))
+    branch: ((branch))
+    ignore_paths: ["ci/images/*"]
+
+- name: ci-images-git-repo
+  type: git
+  source:
+    uri: ((github-repo))
+    branch: ((branch))
+    paths: ["ci/images/*"]
+
+- name: vscode-extension-di-ci-image
+  type: docker-image
+  source:
+    repository: springsource-docker-private-local.jfrog.io/vscode-extension-di-ci-image
+    username: ((artifactory-username))
+    password: ((artifactory-password))
+    tag: ((branch))
+
+- name: vscode-extension-core-trigger
+  type: s3
+  source:
+    bucket: ((spr-artifacts-s3-bucket-name))
+    regexp: triggers/vscode-extension-core/trigger-(.*)
+    access_key_id: ((spr-s3-access-key-id))
+    secret_access_key: ((spr-s3-secret-access-key))
+    region_name: us-west-1
+
+- name: vscode-extension-di-trigger
+  type: s3
+  source:
+    bucket: ((spr-artifacts-s3-bucket-name))
+    regexp: triggers/((build-name))/trigger-(.*)
+    access_key_id: ((spr-s3-access-key-id))
+    secret_access_key: ((spr-s3-secret-access-key))
+    region_name: us-west-1
+
+#################################################
+# Jobs
+#################################################
+jobs:
+
+- name: vscode-extension-di-ci-images
+  plan:
+  - get: ci-images-git-repo
+    trigger: true
+  - put: vscode-extension-di-ci-image
+    params:
+      build: ci-images-git-repo/ci/images/vscode-extension-di-ci-image
+      build_args:
+        BRANCH: ((branch))
+
+- name: publish-vscode-extension-di
+  plan:
+  - get: vscode-extension-di-ci-image
+    passed:
+    - vscode-extension-di-ci-images
+  - get: git-repo
+    trigger: true
+  - get: vscode-extension-core-trigger
+    trigger: true
+  - task: pack-publish
+    image: vscode-extension-di-ci-image
+    file: git-repo/ci/tasks/vscode-extension-di-publish.yml
+    params:
+      BUILD_NAME: ((build-name))
+    on_success:
+      put: vscode-extension-di-trigger
+      params:
+        file: triggers/((build-name))/*
