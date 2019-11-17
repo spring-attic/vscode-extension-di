@@ -28,13 +28,13 @@
   },
   "dependencies": {
     "@pivotal-tools/vscode-extension-core": "next",
-    "inversify": "^5.0.1",
-    "reflect-metadata": "^0.1.13"
+    "inversify": "5.0.1",
+    "reflect-metadata": "0.1.13"
   },
   "devDependencies": {
-    "@types/node": "^7.0.43",
-    "@types/vscode": "^1.37.0",
-    "typescript": "^3.3.1",
-    "vscode-test": "^1.2.0"
+    "@types/node": "7.10.7",
+    "@types/vscode": "1.37.0",
+    "typescript": "3.6.4",
+    "vscode-test": "1.2.0"
   }
 }
