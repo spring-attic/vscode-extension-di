@@ -18,7 +18,7 @@ import { ContainerModule, decorate, injectable } from 'inversify';
 import {
     ExtensionActivateAware, ExtensionContextAware, SettingsManager, DefaultSettingsManager, NotificationManager,
     OutputManager, StatusBarManager, StatusBarManagerItem, AbstractStatusBarManagerItem, LanguageServerManager,
-    LanguageSupport, IconManager, ReadOnlyDocumentManager
+    LanguageSupport, IconManager, ReadOnlyDocumentManager, JavaFinder, DefaultJavaFinder
 } from '@pivotal-tools/vscode-extension-core';
 import { DITYPES } from './ditypes';
 import { ExtensionActivateManager } from './extension-activate-manager';
@@ -72,5 +72,18 @@ const coreContainerModule = new ContainerModule((bind) => {
             return new IconManager(extensionContext);
         }
     ).inSingletonScope();
+
+    bind<JavaFinder>(DITYPES.JavaFinder).toDynamicValue(
+        context => {
+            let javaHomeConfigKey: string|undefined;
+            if (context.container.isBound(DITYPES.JavaFinderJavaHomeKey)) {
+                javaHomeConfigKey = context.container.get<string>(DITYPES.JavaFinderJavaHomeKey);
+            }
+            if (!javaHomeConfigKey) {
+                javaHomeConfigKey = 'java.home';
+            }
+            return new DefaultJavaFinder(javaHomeConfigKey);
+        }
+    );
 });
 export default coreContainerModule;

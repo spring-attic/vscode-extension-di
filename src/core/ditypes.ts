@@ -28,5 +28,7 @@ export const DITYPES = {
     OutputManager: Symbol('OutputManager'),
     StatusBarManager: Symbol('StatusBarManager'),
     StatusBarManagerItem: Symbol('StatusBarManagerItem'),
-    ReadOnlyDocumentManager: Symbol('ReadOnlyDocumentManager')
+    ReadOnlyDocumentManager: Symbol('ReadOnlyDocumentManager'),
+    JavaFinder: Symbol('JavaFinder'),
+    JavaFinderJavaHomeKey: Symbol('JavaFinderJavaHomeKey'),
 };
