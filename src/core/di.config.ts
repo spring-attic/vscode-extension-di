@@ -28,15 +28,31 @@ const coreContainerModule = new ContainerModule((bind) => {
     bind<ExtensionActivateAware>(DITYPES.ExtensionActivateAware).to(ExtensionActivateManager);
     bind<ExtensionContextAware>(DITYPES.ExtensionContextAware).to(CommandsManager);
     bind<OutputManager>(DITYPES.OutputManager).toDynamicValue(() => new OutputManager()).inSingletonScope();
+
+    // we expect locationKey from an app and outputManager for log
     bind<NotificationManager>(DITYPES.NotificationManager).toDynamicValue(
         context => {
-            let locationKey: string|undefined;
+            let locationKey: string | undefined;
+            let levelKey: string | undefined;
+            let outputKey: string | undefined;
+            let outputTag: string | undefined;
             if (context.container.isBound(DITYPES.NotificationManagerLocationKey)) {
                 locationKey = context.container.get<string>(DITYPES.NotificationManagerLocationKey);
             }
-            return new NotificationManager(locationKey);
+            if (context.container.isBound(DITYPES.NotificationManagerLevelKey)) {
+                levelKey = context.container.get<string>(DITYPES.NotificationManagerLevelKey);
+            }
+            if (context.container.isBound(DITYPES.NotificationManagerOutputKey)) {
+                outputKey = context.container.get<string>(DITYPES.NotificationManagerOutputKey);
+            }
+            if (context.container.isBound(DITYPES.NotificationManagerOutputTag)) {
+                outputTag = context.container.get<string>(DITYPES.NotificationManagerOutputTag);
+            }
+            const outputManager = context.container.get<OutputManager>(DITYPES.OutputManager);
+            return new NotificationManager(outputManager, locationKey, levelKey, outputKey, outputTag);
         }
     ).inSingletonScope();
+
     bind<SettingsManager>(DITYPES.SettingsManager).toDynamicValue(
         context => {
             const extensionContext = context.container.get<ExtensionContext>(DITYPES.ExtensionContext);
