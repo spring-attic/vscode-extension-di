@@ -1,3 +1,5 @@
+# vscode-extension-di is no longer actively maintained by VMware, Inc.
+
 ifdef::env-github[]
 :tip-caption: :bulb:
 :note-caption: :information_source:
